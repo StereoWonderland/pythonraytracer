@@ -15,7 +15,7 @@ class Renderer:
 
         self.image = np.zeros((image_height, image_width, 3), dtype=np.uint8)
         self.horizontal = np.array([viewport_width, 0., 0.])
-        self.vertical = np.array([0., viewport_width, 0.])
+        self.vertical = np.array([0., viewport_height, 0.])
         self.lower_left = (self.origin
                                   - self.horizontal / 2
                                   - self.vertical / 2
