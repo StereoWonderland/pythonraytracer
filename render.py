@@ -1,6 +1,6 @@
 import numpy as np
 from PIL import Image
-from ray import Ray
+from ray import Ray, normalise
 from surface import World
 
 class Renderer:
@@ -39,8 +39,10 @@ class Renderer:
         img.save(file_name)
 
 def ray_colour(ray: Ray, world: World) -> np.ndarray:
-    if world.hit(ray):
-        return np.array([255, 0, 0])
+    time = world.hit(ray)
+    if time > 0:
+        normal = normalise(np.subtract(ray.at_time(time), np.array([0., 0., -1.])))
+        return 0.5 * 255 * np.array([normal[0] + 1, normal[1] + 1, normal[2] + 1])
     else:
         t = 0.5 * (ray.unit_direction()[1] + 1)
         return (1 - t) * np.array([255, 255, 255]) + t * np.array([130, 200, 255])
