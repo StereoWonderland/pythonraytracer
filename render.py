@@ -21,6 +21,23 @@ class Renderer:
                                   - self.vertical / 2
                                   - np.array([0., 0., self.focal_length]))
 
+    def render(self, world: World) -> None:
+        for i in range(self.image_height):
+            print(f'Scanlines remaining: {self.image_width - i}', end='\r')
+            for j in range(self.image_width):
+                x = j / (self.image_width - 1)
+                y = (self.image_height - 1 - i) / (self.image_height - 1)
+                ray = Ray(self.origin,
+                          self.lower_left
+                          + x * self.horizontal
+                          + y * self.vertical)
+                colour = ray_colour(ray, world)
+                self.image[i,j] = colour
+
+    def save(self, file_name: str) -> None:
+        img = Image.fromarray(self.image, 'RGB')
+        img.save(file_name)
+
 def ray_colour(ray: Ray, world: World) -> np.ndarray:
     if world.hit(ray):
         return np.array([255, 0, 0])
