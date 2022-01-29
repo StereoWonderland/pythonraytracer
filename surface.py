@@ -16,6 +16,6 @@ class Sphere(Surface):
         oc = ray.origin - self.center
         a = np.dot(ray.direction, ray.direction)
         b = 2 * np.dot(oc, ray.direction)
-        c = np.dot(oc, oc) - (radius ** 2)
+        c = np.dot(oc, oc) - (self.radius ** 2)
         disc = b ** 2 - 4 * a * c
         return disc > 0
