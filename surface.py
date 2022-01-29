@@ -19,3 +19,16 @@ class Sphere(Surface):
         c = np.dot(oc, oc) - (self.radius ** 2)
         disc = b ** 2 - 4 * a * c
         return disc > 0
+
+class World():
+    def __init__(self):
+        self.surface_list = []
+
+    def add(self, surface: Surface) -> None:
+        self.surface_list.append(surface)
+
+    def hit(self, ray: Ray) -> bool:
+        for surf in self.surface_list:
+            if surf.hit(ray):
+                return True
+        return False
