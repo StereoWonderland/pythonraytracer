@@ -1,6 +1,12 @@
 import numpy as np
 from abc import ABC, abstractmethod
-from ray import Ray
+from ray import Ray, normalise
+from typing import NamedTuple
+
+class HitData(NamedTuple):
+    time: float
+    point: np.ndarray
+    normal: np.ndarray
 
 class Surface(ABC):
     def __init__(self, center: np.ndarray):
@@ -33,8 +39,11 @@ class World():
     def add(self, surface: Surface) -> None:
         self.surface_list.append(surface)
 
-    def hit(self, ray: Ray) -> tuple[float, np.ndarray]:
+    def hit(self, ray: Ray) -> HitData:
         for surf in self.surface_list:
             if surf.hit(ray) > 0:
-                return surf.hit(ray), surf.center
-        return 0, np.array([0., 0., 0.])
+                time = surf.hit(ray)
+                point = ray.at_time(time)
+                normal = normalise(np.subtract(point, surf.center))
+                return HitData(time, point, normal)
+        return HitData(0, np.array([0., 0., 0.]), np.array([0., 0., 0.]))
