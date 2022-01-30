@@ -1,7 +1,7 @@
 import numpy as np
 from abc import ABC, abstractmethod
-from ray import Ray, normalise
 from typing import NamedTuple
+from ray import Ray, normalise
 
 class HitData(NamedTuple):
     time: float
