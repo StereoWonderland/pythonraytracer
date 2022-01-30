@@ -1,5 +1,6 @@
 import numpy as np
 from PIL import Image
+from random import random
 from ray import Ray
 from surface import World
 
@@ -28,8 +29,9 @@ class Camera:
         return ray
 
 class Renderer:
-    def __init__(self, camera: Camera):
+    def __init__(self, camera: Camera, samples: int = 1):
         self.camera = camera
+        self.samples = samples
         self.image = np.zeros((camera.image_height, camera.image_width, 3),
                               dtype=np.uint8)
 
@@ -37,9 +39,11 @@ class Renderer:
         for i in range(self.camera.image_height):
             print(f'Scanlines remaining: {self.camera.image_width - i}', end='\r')
             for j in range(self.camera.image_width):
-                ray = self.camera.get_ray(i, j)
-                colour = ray_colour(ray, world)
-                self.image[i,j] = colour
+                colour = np.array([0., 0., 0.,])
+                for _ in range(self.samples):
+                    ray = self.camera.get_ray(i + random(), j + random())
+                    colour += ray_colour(ray, world)
+                self.image[i,j] = colour / self.samples
 
     def save(self, file_name: str) -> None:
         img = Image.fromarray(self.image, 'RGB')
