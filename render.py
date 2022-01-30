@@ -1,7 +1,7 @@
 import numpy as np
 from PIL import Image
 from random import random
-from ray import Ray
+from ray import Ray, normalise
 from surface import World
 
 class Camera:
@@ -56,7 +56,7 @@ def ray_colour(ray: Ray, world: World, depth: int) -> np.ndarray:
         return np.array([0, 0, 0])
     hit_data = world.hit(ray)
     if hit_data.time > 0:
-        target = hit_data.point + hit_data.normal + random_point_in_unit_ball()
+        target = hit_data.point + hit_data.normal + random_unit_vector()
         return 0.5 * ray_colour(Ray(hit_data.point,
                                     np.subtract(target, hit_data.point)),
                                 world, depth - 1)
@@ -70,3 +70,6 @@ def random_point_in_unit_ball() -> np.ndarray:
         return random_point
     else:
         return random_point_in_unit_ball()
+
+def random_unit_vector() -> np.ndarray:
+    return normalise(random_point_in_unit_ball())
