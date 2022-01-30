@@ -39,9 +39,9 @@ class Renderer:
         img.save(file_name)
 
 def ray_colour(ray: Ray, world: World) -> np.ndarray:
-    time = world.hit(ray)
+    time, center = world.hit(ray)
     if time > 0:
-        normal = normalise(np.subtract(ray.at_time(time), np.array([0., 0., -1.])))
+        normal = normalise(np.subtract(ray.at_time(time), center))
         return 0.5 * 255 * np.array([normal[0] + 1, normal[1] + 1, normal[2] + 1])
     else:
         t = 0.5 * (ray.unit_direction()[1] + 1)

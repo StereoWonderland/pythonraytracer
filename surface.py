@@ -3,13 +3,16 @@ from abc import ABC, abstractmethod
 from ray import Ray
 
 class Surface(ABC):
+    def __init__(self, center: np.ndarray):
+        self.center = center
+
     @abstractmethod
     def hit(self, ray: Ray) -> float:
         pass
 
 class Sphere(Surface):
     def __init__(self, center: np.ndarray, radius: float):
-        self.center = center
+        super().__init__(center)
         self.radius = radius
 
     def hit(self, ray: Ray) -> float:
@@ -30,8 +33,8 @@ class World():
     def add(self, surface: Surface) -> None:
         self.surface_list.append(surface)
 
-    def hit(self, ray: Ray) -> float:
+    def hit(self, ray: Ray) -> tuple[float, np.ndarray]:
         for surf in self.surface_list:
             if surf.hit(ray) > 0:
-                return surf.hit(ray)
-        return 0
+                return surf.hit(ray), surf.center
+        return 0, np.array([0., 0., 0.])
