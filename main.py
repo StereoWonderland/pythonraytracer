@@ -1,4 +1,5 @@
 import numpy as np
+import time
 from render import Camera, Renderer
 import surface
 
@@ -12,13 +13,15 @@ ORIGIN = np.array([0., 0., 0.])
 def main():
     camera = Camera(IMAGE_WIDTH, IMAGE_HEIGHT, VIEWPORT_WIDTH,
                         VIEWPORT_HEIGHT, FOCAL_LENGTH, ORIGIN)
-    renderer = Renderer(camera)
+    renderer = Renderer(camera, 3, 50)
 
     world = surface.World()
     world.add(surface.Sphere(np.array([0., 0., -1.]), 0.5))
     world.add(surface.Sphere(np.array([0., -100.5, -1]), 100))
 
+    initial_time = time.time()
     renderer.render(world)
+    print(f'Rendered in {time.time() - initial_time} seconds')
     renderer.save('test1.png')
 
 if __name__ == '__main__':
