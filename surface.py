@@ -30,7 +30,7 @@ class Sphere(Surface):
         if disc < 0:
             return -1
         else:
-            return (-b - np.sqrt(disc)) / 2 * a
+            return (-b - np.sqrt(disc)) / (2 * a)
 
 class World():
     def __init__(self):
