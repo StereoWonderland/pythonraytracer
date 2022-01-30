@@ -37,7 +37,8 @@ class Renderer:
 
     def render(self, world: World) -> None:
         for i in range(self.camera.image_height):
-            print(f'Scanlines remaining: {self.camera.image_width - i}', end='\r')
+            print(f'\x1b[2KScanlines remaining: {self.camera.image_height - i}',
+                  end='\r')
             for j in range(self.camera.image_width):
                 colour = np.array([0., 0., 0.,])
                 for _ in range(self.samples):
