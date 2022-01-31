@@ -2,14 +2,18 @@ import numpy as np
 from abc import ABC, abstractmethod
 from typing import NamedTuple
 from ray import Ray, normalise
+from material import Material
 
 class HitData(NamedTuple):
     time: float
     point: np.ndarray
     normal: np.ndarray
+    colour: np.ndarray
+    target: np.ndarray
 
 class Surface(ABC):
-    def __init__(self, center: np.ndarray):
+    def __init__(self, material: Material, center: np.ndarray):
+        self.material = material
         self.center = center
 
     @abstractmethod
@@ -17,8 +21,8 @@ class Surface(ABC):
         pass
 
 class Sphere(Surface):
-    def __init__(self, center: np.ndarray, radius: float):
-        super().__init__(center)
+    def __init__(self, material: Material, center: np.ndarray, radius: float):
+        super().__init__(material, center)
         self.radius = radius
 
     def hit(self, ray: Ray) -> float:
@@ -45,5 +49,8 @@ class World():
                 time = surf.hit(ray)
                 point = ray.at_time(time)
                 normal = normalise(np.subtract(point, surf.center))
-                return HitData(time, point, normal)
-        return HitData(0, np.array([0., 0., 0.]), np.array([0., 0., 0.]))
+                colour = surf.material.colour
+                target = surf.material.scatter(point, normal)
+                return HitData(time, point, normal, colour, target)
+        return HitData(0, np.array([0., 0., 0.]), np.array([0., 0., 0.]),
+                       np.array([0., 0., 0.]), np.array([0., 0., 0.]))
