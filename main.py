@@ -2,6 +2,7 @@ import numpy as np
 import time
 from render import Camera, Renderer
 import surface
+from material import Lambertian
 
 IMAGE_WIDTH = 400
 IMAGE_HEIGHT = 300
@@ -15,9 +16,12 @@ def main():
                         VIEWPORT_HEIGHT, FOCAL_LENGTH, ORIGIN)
     renderer = Renderer(camera, 3, 50)
 
+    material = Lambertian(np.array([125, 125, 125]))
+    material2 = Lambertian(np.array([40, 125, 40]))
+
     world = surface.World()
-    world.add(surface.Sphere(np.array([0., 0., -1.]), 0.5))
-    world.add(surface.Sphere(np.array([0., -100.5, -1]), 100))
+    world.add(surface.Sphere(material, np.array([0., 0., -1.]), 0.5))
+    world.add(surface.Sphere(material2, np.array([0., -100.5, -1]), 100))
 
     initial_time = time.time()
     renderer.render(world)
