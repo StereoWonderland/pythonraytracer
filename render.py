@@ -56,10 +56,13 @@ def ray_colour(ray: Ray, world: World, depth: int) -> np.ndarray:
         return np.array([0, 0, 0])
     hit_data = world.hit(ray)
     if hit_data.time > 0:
-        return ((hit_data.colour / 255)
-                * ray_colour(Ray(hit_data.point,
-                                 np.subtract(hit_data.target, hit_data.point)),
-                             world, depth - 1))
+        if hit_data.scattered:
+            return ((hit_data.colour / 255)
+                    * ray_colour(Ray(hit_data.point,
+                                    np.subtract(hit_data.target, hit_data.point)),
+                                world, depth - 1))
+        else:
+            return np.array([0, 0, 0])
     else:
         t = 0.5 * (ray.unit_direction()[1] + 1)
         return (1 - t) * np.array([255, 255, 255]) + t * np.array([130, 200, 255])

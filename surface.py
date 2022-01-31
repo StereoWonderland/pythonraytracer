@@ -10,6 +10,7 @@ class HitData(NamedTuple):
     normal: np.ndarray
     colour: np.ndarray
     target: np.ndarray
+    scattered: bool
 
 class Surface(ABC):
     def __init__(self, material: Material, center: np.ndarray):
@@ -50,7 +51,9 @@ class World():
                 point = ray.at_time(time)
                 normal = normalise(np.subtract(point, surf.center))
                 colour = surf.material.colour
-                target = surf.material.scatter(point, normal)
-                return HitData(time, point, normal, colour, target)
+                scattered, target = surf.material.scatter(point,
+                                                          normal,
+                                                          ray.unit_direction())
+                return HitData(time, point, normal, colour, target, scattered)
         return HitData(0, np.array([0., 0., 0.]), np.array([0., 0., 0.]),
-                       np.array([0., 0., 0.]), np.array([0., 0., 0.]))
+                       np.array([0., 0., 0.]), np.array([0., 0., 0.]), False)
